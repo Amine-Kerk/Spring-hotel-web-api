@@ -60,7 +60,7 @@ public class ClientController {
     }
     
     }
-    @PostMapping
+    @PostMapping //ajout de lapi post pour creer un nouveau client 
 	public ResponseEntity<?> creerClient(@RequestBody @Valid CreerClientRequestDto client, BindingResult resultatValidation) {
 
 		if (resultatValidation.hasErrors()) {
