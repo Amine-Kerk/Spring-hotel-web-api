@@ -3,7 +3,7 @@ package dev.hotel.webcontrolleur;
 import dev.hotel.entite.Client;
 import dev.hotel.repository.ClientRepository;
 import org.junit.jupiter.api.Test;
-
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,8 +14,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ClientController.class) // contrôleur à tester
 public class ClientControllerTest {
@@ -60,6 +64,23 @@ public class ClientControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("[0].nom").value("Nom 1"))
             .andExpect(MockMvcResultMatchers.jsonPath("[0].prenoms").value("Prénoms 1"))
             .andExpect(MockMvcResultMatchers.jsonPath("[1].nom").value("Nom 2"));
+    }
+    
+    
+    
+    @Test
+    public void TestClientUUID() throws Exception {
+    	Client client = new Client ("Boop","Betty");
+    	UUID id = UUID.randomUUID();
+    	client.setUuid(id);
+    	
+    	Mockito.when(clientRepository.findById(id)).thenReturn(Optional.of(client));
+    	
+    	mockMvc.perform(MockMvcRequestBuilders.get("/clients/{uuid}", id))
+    	.andExpect(status().isOk())
+    	.andExpect(jsonPath("$.nom").value("Boop"))
+    	.andExpect(jsonPath("$.prenoms").value("Betty"));
+    	
     }
 
 }
