@@ -1,33 +1,42 @@
-package dev.hotel.webcontrolleur;
+package dev.hotel.web;
 
 import dev.hotel.entite.Client;
 
 import dev.hotel.service.ClientService;
-import dev.hotel.web.ClientController;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+@RunWith(SpringRunner.class)
 
 @WebMvcTest(ClientController.class) // contrôleur à tester
 public class ClientControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+  
 
     @MockBean
    private  ClientService clientService;
@@ -88,6 +97,23 @@ Mockito.when(clientService.listerClients(0,2)).thenReturn(Arrays.asList(c1,c2));
     	.andExpect(jsonPath("$.prenoms").value("Betty"));
     	
     }
-
+    
+    
+    
+    @Test
+    public void TestCreerClient() throws Exception {
+    	Client client = new Client();
+    	client.setNom("bob");
+    	client.setPrenoms("eponge");
+    	
+    	Mockito.when(clientService.creerNouveauClient("lolo", "bob")).thenReturn(client);
+    	
+    	
+    	mockMvc.perform(MockMvcRequestBuilders.post("/clients")
+    	           .contentType(MediaType.APPLICATION_JSON)
+    	           .content("{\"nom\": \"lolo\", \"prenoms\": \"bob\" }") 
+    	           .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+     }
+    
 }
 
