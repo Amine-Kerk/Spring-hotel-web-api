@@ -15,40 +15,37 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.hotel.entite.Client;
 import dev.hotel.repository.ClientRepository;
+import dev.hotel.service.ClientService;
 
 @RestController
 public class ClientController {
 	
-	private ClientRepository clientRepository;
+	private ClientService clientService ;
 
-    public ClientController(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+	
+
+	public ClientController(ClientService clientService) {
+		super();
+		this.clientService = clientService;
+	}
+
 
 	// GET /clients
-    @RequestMapping(
-            method = RequestMethod.GET,
-            path = "clients"
-    )
-    public List<Client> listerClients(
-            @RequestParam Integer start,
-            @RequestParam Integer size
-    ) {
-        return clientRepository.findAll(PageRequest.of(start, size)).getContent();
+    @RequestMapping(method = RequestMethod.GET,path = "clients")
+    
+    public List<Client> listerClients( @RequestParam Integer start, @RequestParam Integer size) {
+        return clientService.listerClients(start, size);
     }
     
     
     //GET /clients/UUID
-    @RequestMapping(
-            method = RequestMethod.GET,
-            path = "clients/{uuid}"
-    )
+    @RequestMapping(method = RequestMethod.GET,path = "clients/{uuid}")
     
     public  ResponseEntity<?> ClientUUID(@PathVariable UUID uuid ) {
-    	Optional<Client> optClient = this.clientRepository.findById(uuid);
+    	Optional<Client> optClient = this.clientService.recupererClient(uuid);
     	
     	if(optClient.isPresent()) {
-    		return ResponseEntity.status(HttpStatus.OK).body(optClient.get());
+    		return ResponseEntity.status(HttpStatus.OK).body(optClient);
    	} else {
    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("l'uuid ne correspond a aucun client en base de données !");
     }

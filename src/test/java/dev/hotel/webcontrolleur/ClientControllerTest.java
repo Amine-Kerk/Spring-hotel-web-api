@@ -2,6 +2,8 @@ package dev.hotel.webcontrolleur;
 
 import dev.hotel.entite.Client;
 import dev.hotel.repository.ClientRepository;
+import dev.hotel.service.ClientService;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,24 +27,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ClientControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    ClientRepository clientRepository;
+   private  ClientService clientService;
 
     @Test
     public void testListerClientsAvec2Clients() throws Exception {
         //
         Client c1 = new Client();
-        c1.setNom("Nom 1");
-        c1.setPrenoms("Prénoms 1");
+        c1.setNom("Boop");
+        c1.setPrenoms("Betty");
 
         Client c2 = new Client();
-        c2.setNom("Nom 2");
-        c2.setPrenoms("Prénoms 2");
+        c2.setNom("Rabbit");
+        c2.setPrenoms("Roger");
 
-        when(clientRepository.findAll(PageRequest.of(10, 20)))
-                .thenReturn(new PageImpl<>(Arrays.asList(c1, c2)));
+Mockito.when(clientService.listerClients(0,2)).thenReturn(Arrays.asList(c1,c2));
+
+
+
 
         /*
         [
@@ -60,10 +64,12 @@ public class ClientControllerTest {
          */
 
         // GET /clients
-        mockMvc.perform(MockMvcRequestBuilders.get("/clients?start=10&size=20"))
-            .andExpect(MockMvcResultMatchers.jsonPath("[0].nom").value("Nom 1"))
-            .andExpect(MockMvcResultMatchers.jsonPath("[0].prenoms").value("Prénoms 1"))
-            .andExpect(MockMvcResultMatchers.jsonPath("[1].nom").value("Nom 2"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/clients?start=0&size=2"))
+            .andExpect(MockMvcResultMatchers.jsonPath("[0].nom").value("Boop"))
+            .andExpect(MockMvcResultMatchers.jsonPath("[0].prenoms").value("Betty"))
+            .andExpect(MockMvcResultMatchers.jsonPath("[1].nom").value("Rabbit"))
+            .andExpect(MockMvcResultMatchers.jsonPath("[1].prenoms").value("Roger"));
+            
     }
     
     
@@ -74,7 +80,7 @@ public class ClientControllerTest {
     	UUID id = UUID.randomUUID();
     	client.setUuid(id);
     	
-    	Mockito.when(clientRepository.findById(id)).thenReturn(Optional.of(client));
+    	Mockito.when(clientService.recupererClient(id)).thenReturn(Optional.of(client));
     	
     	mockMvc.perform(MockMvcRequestBuilders.get("/clients/{uuid}", id))
     	.andExpect(status().isOk())
