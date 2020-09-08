@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.hotel.entite.Client;
 import dev.hotel.repository.ClientRepository;
@@ -29,6 +30,13 @@ public class ClientService {
         return clientRepository.findById(uuid);
     }
  
+	@Transactional
+    public Client creerNouveauClient(String nom, String prenoms) {
+        Client nouveauClient = new Client(nom, prenoms);
+        return clientRepository.save(nouveauClient);
+    }
+
+	
 	
 	
 }
