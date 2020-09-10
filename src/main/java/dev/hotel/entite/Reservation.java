@@ -20,8 +20,6 @@ public class Reservation extends BaseEntite {
     @ManyToMany
     private List<Chambre> chambres = new ArrayList<>();
 
-    public Reservation() {
-    }
 
     public Reservation(LocalDate dateDebut, LocalDate dateFin, Client client, List<Chambre> chambres) {
         this.dateDebut = dateDebut;
@@ -30,7 +28,21 @@ public class Reservation extends BaseEntite {
         this.chambres = chambres;
     }
 
-    public LocalDate getDateDebut() {
+
+    
+
+	
+
+	public Reservation() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+
+
+
+	public LocalDate getDateDebut() {
         return dateDebut;
     }
 

@@ -64,7 +64,7 @@ public class ClientController {
 	public ResponseEntity<?> creerClient(@RequestBody @Valid CreerClientRequestDto client, BindingResult resultatValidation) {
 
 		if (resultatValidation.hasErrors()) {
-			return ResponseEntity.badRequest().body("Erreur");
+			return ResponseEntity.badRequest().body("Erreur le nom et le prenonm doivent avoir plus de deux caractéres");
 		}
 
 		return ResponseEntity.ok(new CreerClientResponseDto(clientService.creerNouveauClient(client.getNom(), client.getPrenoms())));
