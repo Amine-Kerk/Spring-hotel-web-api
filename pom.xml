@@ -51,6 +51,26 @@
             </exclusions>
         </dependency>
     </dependencies>
+    
+    <profiles>
+    
+     <profile>
+			<id>heroku</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+</dependency>
+			</dependencies>
+		</profile>
+    
+    
+    </profiles>
+   
 
     <build>
         <plugins>
